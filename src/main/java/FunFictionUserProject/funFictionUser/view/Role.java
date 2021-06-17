@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
@@ -17,4 +18,8 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "type_role")
+    private String role;
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users;
 }
