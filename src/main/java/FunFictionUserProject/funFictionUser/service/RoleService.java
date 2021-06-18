@@ -14,4 +14,6 @@ public interface RoleService {
     List<Role> findAll();
 
     Role saveAndFlush(Role role);
+
+    Role findByRole(String name);
 }

@@ -14,4 +14,8 @@ public interface UserService {
     List<User> findAll();
 
     User saveAndFlush(User user);
+
+    User findByLogin(String login);
+
+    User register(User user);
 }

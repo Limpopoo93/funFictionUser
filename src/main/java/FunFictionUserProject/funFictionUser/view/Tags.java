@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
-@ToString()
 @Entity
 @Table(name = "m_tags")
 public class Tags {
@@ -22,4 +23,13 @@ public class Tags {
     private String typeTags;
     @ManyToMany(mappedBy = "tags")
     private List<FunFiction> funFictions;
+
+    @Override
+    public String toString() {
+        return "Tags{" +
+                "id=" + id +
+                ", typeTags='" + typeTags + '\'' +
+                ", funFictions=" + funFictions +
+                '}';
+    }
 }

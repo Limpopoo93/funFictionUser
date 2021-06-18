@@ -37,4 +37,9 @@ public class RoleServiceImpl implements RoleService {
     public Role saveAndFlush(Role role) {
         return roleRepository.saveAndFlush(role);
     }
+
+    @Override
+    public Role findByRole(String name) {
+        return roleRepository.findByRole(name);
+    }
 }
