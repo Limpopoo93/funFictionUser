@@ -38,7 +38,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-        //@GetMapping("/")
+        // @GetMapping("/")
        // @RequestMapping("/")
        // @ResponseBody
         //public String main() {
