@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-//@RestController
-//@RequestMapping("user")
 public class UserController {
     private final AuthenticationManager authenticationManager;
 
@@ -38,7 +36,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-         @GetMapping("/")
+       @GetMapping("/")
         public String main() {
             return "main";
         }
