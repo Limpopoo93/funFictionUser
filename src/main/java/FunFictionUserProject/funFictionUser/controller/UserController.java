@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-//@Controller
-@RestController
+@Controller
+//@RestController
 //@RequestMapping("user")
 public class UserController {
     private final AuthenticationManager authenticationManager;
@@ -39,11 +39,11 @@ public class UserController {
     }
 
         //@GetMapping("/")
-        @RequestMapping("/")
-        @ResponseBody
-        public String main() {
-            return "main";
-        }
+       // @RequestMapping("/")
+       // @ResponseBody
+        //public String main() {
+        //    return "main";
+        //}
 
         @GetMapping("/registration")
         public String registration(Model model, RegisterRequestDto registerRequestDto) {
