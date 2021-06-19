@@ -36,10 +36,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-      // @GetMapping("/")
-      //  public String main() {
-       //     return "main";
-      //  }
+
 
         @GetMapping("/registration")
         public String registration(Model model, RegisterRequestDto registerRequestDto) {
