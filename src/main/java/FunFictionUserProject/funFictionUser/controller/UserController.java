@@ -71,7 +71,7 @@ public class UserController {
             String token = jwtTokenProvider.createToken(username, user.getRoles());
             session.setAttribute("user", user);
             session.setAttribute("token", token);
-            return "index";
+            return "main";
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
@@ -95,7 +95,7 @@ public class UserController {
             String token = jwtTokenProvider.createToken(username, user.getRoles());
             session.setAttribute("user", user);
             session.setAttribute("token", token);
-            return "index";
+            return "main";
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
