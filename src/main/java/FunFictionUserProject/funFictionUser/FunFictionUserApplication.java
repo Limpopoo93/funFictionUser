@@ -20,6 +20,6 @@ public class FunFictionUserApplication {
 	}
 	@RequestMapping("/")
 	String index() {
-		return "main";
+		return "index";
 	}
 }
