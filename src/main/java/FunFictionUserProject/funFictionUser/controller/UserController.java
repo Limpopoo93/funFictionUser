@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
-//@RestController
+//@Controller
+@RestController
 //@RequestMapping("user")
 public class UserController {
     private final AuthenticationManager authenticationManager;
