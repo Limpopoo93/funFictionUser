@@ -18,7 +18,7 @@ public class FunFictionUserApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FunFictionUserApplication.class, args);
 	}
-	@GetMapping("/")
+	@RequestMapping("/")
 	public String main() {
 		return "index";
 	}
