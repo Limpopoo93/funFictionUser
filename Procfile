@@ -1,1 +1,1 @@
-web: java -jar target/funFictionUser-0.0.1-SNAPSHOT.jar
+web: java -jar target/funFictionUser-0.0.1.jar
