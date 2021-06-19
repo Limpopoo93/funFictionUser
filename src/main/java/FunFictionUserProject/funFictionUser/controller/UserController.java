@@ -41,7 +41,7 @@ public class UserController {
         //@GetMapping("/")
         @RequestMapping("/")
         @ResponseBody
-        public String main(Model model) {
+        public String main() {
             return "main";
         }
 
