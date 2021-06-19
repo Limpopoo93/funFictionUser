@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
@@ -37,20 +39,19 @@ public class UserController {
     }
 
     @RequestMapping("/")
-    String index() {
+    public String index() {
         return "index";
     }
 
-        @GetMapping("/registration")
-        public String registration(Model model, RegisterRequestDto registerRequestDto) {
-            return "registration";
-        }
+    @GetMapping("/registration")
+    public String registration(Model model, RegisterRequestDto registerRequestDto) {
+        return "registration";
+    }
 
-        @GetMapping("/comeIn")
-        public String comeIn(Model model, AuthenticationRequestDto authenticationRequestDto) {
-            return "comeIn";
-        }
-
+    @GetMapping("/comeIn")
+    public String comeIn(Model model, AuthenticationRequestDto authenticationRequestDto) {
+        return "comeIn";
+    }
 
 
     @PostMapping("/save")
