@@ -11,15 +11,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
-@Controller
+
 @SpringBootApplication
 public class FunFictionUserApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FunFictionUserApplication.class, args);
 	}
-	@RequestMapping("/")
-	String index() {
-		return "index";
-	}
+
 }
