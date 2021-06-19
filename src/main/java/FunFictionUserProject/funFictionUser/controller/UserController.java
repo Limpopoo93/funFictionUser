@@ -14,13 +14,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
+//@RestController
+//@RequestMapping("user")
 public class UserController {
     private final AuthenticationManager authenticationManager;
 
@@ -38,29 +41,29 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/")
-    public String main(Model model) {
-        return "main";
-    }
+        @GetMapping("/")
+        public String main(Model model) {
+            return "main";
+        }
 
-    //Переход на страницу регистрации
-    @GetMapping("/registration")
-    public String registration(Model model, RegisterRequestDto registerRequestDto) {
-        return "registration";
-    }
+        @GetMapping("/registration")
+        public String registration(Model model, RegisterRequestDto registerRequestDto) {
+            return "registration";
+        }
 
-    //переход на страницу входа
-    @GetMapping("/comeIn")
-    public String comeIn(Model model, AuthenticationRequestDto authenticationRequestDto) {
-        return "comeIn";
-    }
+        @GetMapping("/comeIn")
+        public String comeIn(Model model, AuthenticationRequestDto authenticationRequestDto) {
+            return "comeIn";
+        }
 
-    @PostMapping("save")
+
+
+    @PostMapping("/save")
     public String save(RegisterRequestDto registerRequestDto, Model model, HttpSession session) {
         try {
-            // if (!registerRequestDto.getPassword().equals(registerRequestDto.getSecondPassword())) {
-            //    throw new BadCredentialsException("password haven't correct");
-           // }
+            if (!registerRequestDto.getPassword().equals(registerRequestDto.getSecondPassword())) {
+                throw new BadCredentialsException("password haven't correct");
+            }
             User userCheck = userService.findByLogin(registerRequestDto.getUsername());
             if (userCheck != null) {
                 throw new UsernameNotFoundException("User with username: " + userCheck.getLogin() + " not found");
@@ -78,7 +81,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String login(AuthenticationRequestDto requestDto, Model model, HttpSession session) {
         try {
             String username = requestDto.getLogin();

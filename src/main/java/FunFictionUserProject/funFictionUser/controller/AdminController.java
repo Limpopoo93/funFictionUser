@@ -2,6 +2,6 @@ package FunFictionUserProject.funFictionUser.controller;
 
 import org.springframework.stereotype.Controller;
 
-@Controller
+//@Controller
 public class AdminController {
 }

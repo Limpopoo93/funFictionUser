@@ -1,4 +1,21 @@
 -- auto-generated definition
+create table m_chapter
+(
+    id             bigserial   not null
+        constraint m_chapter_pk
+            primary key,
+    number_chapter varchar(30) not null,
+    name_chapter   varchar(30) not null,
+    text_chapter   varchar     not null,
+    id_fun_fiction bigint      not null
+        constraint m_chapter_m_fun_fiction__fk
+            references m_fun_fiction
+);
+
+alter table m_chapter
+    owner to postgres;
+
+-- auto-generated definition
 create table m_comments
 (
     id             bigserial    not null
@@ -15,23 +32,6 @@ create table m_comments
 );
 
 alter table m_comments
-    owner to postgres;
-
--- auto-generated definition
-create table m_chapter
-(
-    id             bigserial   not null
-        constraint m_chapter_pk
-            primary key,
-    number_chapter varchar(30) not null,
-    name_chapter   varchar(30) not null,
-    text_chapter   varchar     not null,
-    id_fun_fiction bigint      not null
-        constraint m_chapter_m_fun_fiction__fk
-            references m_fun_fiction
-);
-
-alter table m_chapter
     owner to postgres;
 
 -- auto-generated definition
@@ -52,7 +52,6 @@ create table m_fun_fiction
 
 alter table m_fun_fiction
     owner to postgres;
-
 -- auto-generated definition
 create table m_genre
 (
@@ -65,6 +64,7 @@ create table m_genre
 
 alter table m_genre
     owner to postgres;
+
 -- auto-generated definition
 create table m_role
 (
@@ -106,16 +106,17 @@ alter table m_tags_fiction
 -- auto-generated definition
 create table m_user
 (
-    id        bigserial   not null
+    id           bigserial   not null
         constraint m_user_pk
             primary key,
-    email     varchar(60) not null,
-    password  varchar     not null,
-    nick_name varchar(50) not null,
-    new_year  date        not null,
-    status    varchar(40) not null,
-    created   date        not null,
-    updated   date        not null
+    email        varchar(60) not null,
+    password     varchar     not null,
+    login        varchar(50) not null,
+    status       varchar(40) not null,
+    created      date        not null,
+    updated      date        not null,
+    name_user    varchar(50) not null,
+    surname_user varchar(40) not null
 );
 
 alter table m_user
