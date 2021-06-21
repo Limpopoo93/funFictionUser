@@ -37,4 +37,9 @@ public class FunFictionServiceImpl implements FunFictionService {
     public FunFiction saveAndFlush(FunFiction funFiction) {
         return funFictionRepository.saveAndFlush(funFiction);
     }
+
+    @Override
+    public List<FunFiction> findFunFictionByUserId(Long id) {
+        return funFictionRepository.findFunFictionByUserId(id);
+    }
 }

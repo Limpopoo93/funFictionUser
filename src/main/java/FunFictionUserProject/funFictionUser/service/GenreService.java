@@ -14,4 +14,6 @@ public interface GenreService {
     List<Genre> findAll();
 
     Genre saveAndFlush(Genre genre);
+
+    Genre findByTypeGenre(String typeGenre);
 }

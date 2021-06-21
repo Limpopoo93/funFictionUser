@@ -14,4 +14,6 @@ public interface FunFictionService {
     List<FunFiction> findAll();
 
     FunFiction saveAndFlush(FunFiction funFiction);
+
+    List<FunFiction> findFunFictionByUserId(Long id);
 }

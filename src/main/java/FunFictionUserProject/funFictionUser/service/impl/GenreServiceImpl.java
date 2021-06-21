@@ -37,4 +37,9 @@ public class GenreServiceImpl implements GenreService {
     public Genre saveAndFlush(Genre genre) {
         return genreRepository.saveAndFlush(genre);
     }
+
+    @Override
+    public Genre findByTypeGenre(String typeGenre) {
+        return genreRepository.findByTypeGenre(typeGenre);
+    }
 }

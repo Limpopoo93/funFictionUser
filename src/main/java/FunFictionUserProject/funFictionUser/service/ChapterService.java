@@ -14,4 +14,6 @@ public interface ChapterService {
     List<Chapter> findAll();
 
     Chapter saveAndFlush(Chapter chapter);
+
+    List<Chapter> findChapterByFunFictionId(Long id);
 }

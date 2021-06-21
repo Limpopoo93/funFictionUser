@@ -37,4 +37,9 @@ public class ChapterServiceImpl implements ChapterService {
     public Chapter saveAndFlush(Chapter chapter) {
         return chapterRepository.saveAndFlush(chapter);
     }
+
+    @Override
+    public List<Chapter> findChapterByFunFictionId(Long id) {
+        return chapterRepository.findChapterByFunFictionId(id);
+    }
 }

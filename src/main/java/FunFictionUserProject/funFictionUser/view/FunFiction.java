@@ -35,18 +35,8 @@ public class FunFiction {
             joinColumns = {@JoinColumn(name = "id_fun_fiction", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "id_tags", referencedColumnName = "id")})
     private List<Tags> tags;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "id_user", nullable = false)
+    private User user;
 
-    @Override
-    public String toString() {
-        return "FunFiction{" +
-                "id=" + id +
-                ", nameFun='" + nameFun + '\'' +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", rating=" + rating +
-                ", like=" + like +
-                ", created=" + created +
-                ", genre=" + genre +
-                ", tags=" + tags +
-                '}';
-    }
 }
