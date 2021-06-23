@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private List<Role> userRoles = new ArrayList<>();
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -58,9 +59,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(User user) {
+    public User registerUser(User user) {
         Role roleUser = roleRepository.findByRole("ROLE_USER");
-        List<Role> userRoles = new ArrayList<>();
+        userRoles.add(roleUser);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(userRoles);
+        user.setStatus(Status.ACTIVE);
+        user.setCreated(new Date());
+        user.setUpdated(new Date());
+        User registeredUser = userRepository.save(user);
+        log.info("IN register - user: {} successfully registered", registeredUser);
+        return registeredUser;
+    }
+
+    @Override
+    public User registerAdmin(User user) {
+        Role roleUser = roleRepository.findByRole("ROLE_ADMIN");
         userRoles.add(roleUser);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(userRoles);

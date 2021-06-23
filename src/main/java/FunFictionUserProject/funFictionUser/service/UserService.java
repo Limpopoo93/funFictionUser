@@ -17,5 +17,7 @@ public interface UserService {
 
     User findByLogin(String login);
 
-    User register(User user);
+    public User registerUser(User user);
+
+    public User registerAdmin(User user);
 }

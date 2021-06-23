@@ -2,34 +2,30 @@ package FunFictionUserProject.funFictionUser.controller;
 
 import FunFictionUserProject.funFictionUser.dto.AuthenticationRequestDto;
 import FunFictionUserProject.funFictionUser.dto.RegisterRequestDto;
+import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
 import FunFictionUserProject.funFictionUser.security.JwtTokenProvider;
 import FunFictionUserProject.funFictionUser.service.ChapterService;
 import FunFictionUserProject.funFictionUser.service.FunFictionService;
 import FunFictionUserProject.funFictionUser.service.GenreService;
 import FunFictionUserProject.funFictionUser.service.UserService;
-import FunFictionUserProject.funFictionUser.view.Chapter;
-import FunFictionUserProject.funFictionUser.view.FunFiction;
-import FunFictionUserProject.funFictionUser.view.Genre;
-import FunFictionUserProject.funFictionUser.view.User;
+import FunFictionUserProject.funFictionUser.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
-@Controller
+//@Controller
+@RestController
+@RequestMapping("/user")
 public class UserController {
     private final AuthenticationManager authenticationManager;
 
@@ -55,66 +51,60 @@ public class UserController {
         this.genreService = genreService;
         this.chapterService = chapterService;
     }
-
-    @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
-
-    @GetMapping("/registration")
-    public String registration(Model model, RegisterRequestDto registerRequestDto) {
-        return "registration";
-    }
-
-    @GetMapping("/comeIn")
-    public String comeIn(Model model, AuthenticationRequestDto authenticationRequestDto) {
-        return "comeIn";
-    }
-
+/*
+Сохранение юзера со страницы регистрации (1)
+ */
     @PostMapping("/save")
-    public String save(RegisterRequestDto registerRequestDto, Model model, HttpSession session) {
+    public ResponseEntity<User> save(@RequestBody User user) {
         try {
+           /*
             if (!registerRequestDto.getPassword().equals(registerRequestDto.getSecondPassword())) {
                 throw new BadCredentialsException("password haven't correct");
             }
-            User userCheck = userService.findByLogin(registerRequestDto.getUsername());
+
+            */
+            User userCheck = userService.findByLogin(user.getLogin());
             if (userCheck != null) {
-                throw new UsernameNotFoundException("User with username: " + userCheck.getLogin() + " not found");
+                throw new EntityNotFoundException(User.class, user);
             }
-            User toUser = registerRequestDto.toUser();
-            User user = userService.register(toUser);
-            String username = registerRequestDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, registerRequestDto.getPassword()));
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
-            session.setAttribute("user", user);
-            session.setAttribute("token", token);
-            return "main";
+            user.setStatus(Status.ACTIVE);
+            user.setCreated(new Date());
+            user.setUpdated(new Date());
+            User userResult = userService.registerUser(user);
+            String username = userResult.getLogin();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userResult.getPassword()));
+            String token = jwtTokenProvider.createToken(username, userResult.getRoles());
+            //HttpSession session = null;
+            //session.setAttribute("userResult", userResult);
+            //session.setAttribute("token", token);
+            return new ResponseEntity<>(userResult, HttpStatus.CREATED);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, user);
         }
     }
-
+/*
+Вход юзера со страницы входа (3)
+ */
     @PostMapping("/login")
-    public String loginUser(AuthenticationRequestDto requestDto, Model model, HttpSession session) {
+    public ResponseEntity<User> loginUser(User user) {
         try {
-            String username = requestDto.getLogin();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = userService.findByLogin(username);
+            String username = user.getLogin();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, user.getPassword()));
+            User userResult = userService.findByLogin(username);
 
             if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + username + " not found");
+                throw new EntityNotFoundException(User.class, user);
             }
 
-            if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-                throw new BadCredentialsException("password dont correct");
+            if (!passwordEncoder.matches(user.getPassword(), user.getPassword())) {
+                throw new EntityNotFoundException(User.class, user);
             }
-
             String token = jwtTokenProvider.createToken(username, user.getRoles());
-            session.setAttribute("user", user);
-            session.setAttribute("token", token);
-            return "main";
+            //session.setAttribute("user", user);
+            //session.setAttribute("token", token);
+            return new ResponseEntity<>(userResult, HttpStatus.OK);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, user);
         }
     }
 
@@ -127,7 +117,7 @@ public class UserController {
             model.addAttribute("funFictions", funFictions);
             return "settingUser";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
 
@@ -142,13 +132,14 @@ public class UserController {
             model.addAttribute("funFictions", funFictions);
             return "settingUser";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
+
     @GetMapping("/updatedFunFictionGet/{id}")
     public String updatedFunFictionGet(@PathVariable("id") Long id, Model model, RegisterRequestDto registerRequestDto) {
-       FunFiction funFiction = funFictionService.findById(id);
-       model.addAttribute("funFiction", funFiction);
+        FunFiction funFiction = funFictionService.findById(id);
+        model.addAttribute("funFiction", funFiction);
         return "funFictionUser";
     }
 
@@ -167,7 +158,7 @@ public class UserController {
             model.addAttribute("funFictions", funFictions);
             return "settingUser";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
 
@@ -184,7 +175,7 @@ public class UserController {
             model.addAttribute("funFictions", funFictions);
             return "settingUser";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
 
@@ -211,7 +202,7 @@ public class UserController {
             model.addAttribute("funFictions", funFictions);
             return "settingUser";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
 
@@ -225,7 +216,7 @@ public class UserController {
             session.invalidate();
             return "index";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, registerRequestDto);
         }
     }
 
@@ -233,12 +224,12 @@ public class UserController {
     @PostMapping("/readFunFick/{id}")
     public String readFunFick(@PathVariable("id") Long id, RegisterRequestDto registerRequestDto, Model model, HttpSession session) {
         try {
-          FunFiction funFiction = funFictionService.findById(id);
-          List<Chapter> chapters = chapterService.findChapterByFunFictionId(funFiction.getId());
-          model.addAttribute("chapters", chapters);
-          return "listChapters";
+            FunFiction funFiction = funFictionService.findById(id);
+            List<Chapter> chapters = chapterService.findChapterByFunFictionId(funFiction.getId());
+            model.addAttribute("chapters", chapters);
+            return "listChapters";
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new EntityNotFoundException(User.class, id);
         }
     }
 }

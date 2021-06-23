@@ -11,6 +11,22 @@
 <form method="get" action="registration" name="form">
     <input type="submit" class="button marginButton" value="Registration" />
 </form>
+<input type="button" onclick="tema()" value="Сменить тему"/>
 </body>
 </html>
+<style type="text/css">
+    body{
+        background-color: white;
+    }
+    body.dark-mode{
+        background-color: black;
+    }
 
+</style>
+<script type="application/javascript">
+    function tema()
+    {
+        document.body.classList.toggle('dark-mode');
+    }
+
+</script>
