@@ -13,12 +13,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String ADMIN_ENDPOINT = "/registration";
-    private static final String LOGIN_ENDPOINT = "/comeIn";
-    private static final String SAVE_ENDPOINT = "/save";
-    private static final String MAIN_ENDPOINT = "/";
-    private static final String REGISTRATION_ENDPOINT = "/login";
-    private static final String USER_ENDPOINT = "/user/";
+    //private static final String ADMIN_ENDPOINT = "/registration";
+    //private static final String LOGIN_ENDPOINT = "/comeIn";
+   // private static final String SAVE_ENDPOINT = "/save";
+   // private static final String MAIN_ENDPOINT = "/";
+   // private static final String REGISTRATION_ENDPOINT = "/login";
+    private static final String USER_ENDPOINT = "/user/**";
+    private static final String ADMIN_ENDPOINT = "/admin/**";
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
@@ -39,12 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(LOGIN_ENDPOINT).permitAll()
-                .antMatchers(MAIN_ENDPOINT).permitAll()
-                .antMatchers(SAVE_ENDPOINT).permitAll()
-                .antMatchers(REGISTRATION_ENDPOINT).permitAll()
-                .antMatchers(ADMIN_ENDPOINT).permitAll()
                 .antMatchers(USER_ENDPOINT).permitAll()
+                .antMatchers(ADMIN_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
