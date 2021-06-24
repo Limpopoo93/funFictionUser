@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface FunFictionRepository extends JpaRepository<FunFiction, Long> {
     List<FunFiction> findFunFictionByUserId(Long id);
+
+    List<FunFiction> findByNameFunContaining(String name);
 }

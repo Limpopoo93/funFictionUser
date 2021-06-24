@@ -42,4 +42,9 @@ public class FunFictionServiceImpl implements FunFictionService {
     public List<FunFiction> findFunFictionByUserId(Long id) {
         return funFictionRepository.findFunFictionByUserId(id);
     }
+
+    @Override
+    public List<FunFiction> findByNameFunContaining(String name) {
+        return funFictionRepository.findByNameFunContaining(name);
+    }
 }

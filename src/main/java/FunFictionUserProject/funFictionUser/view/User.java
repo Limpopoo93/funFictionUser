@@ -28,6 +28,10 @@ public class User {
     private String nameUser;
     @Column(name = "surname_user")
     private String surnameUser;
+    @Column(name = "background")
+    private Status background;
+    @Column(name = "language")
+    private Status language;
     @Column(name = "status")
     private Status status;
     @Column(name = "created")

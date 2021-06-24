@@ -37,4 +37,9 @@ public class CommentsServiceImpl implements CommentsService {
     public Comments saveAndFlush(Comments comments) {
         return commentsRepository.saveAndFlush(comments);
     }
+
+    @Override
+    public List<Comments> findByTextCommentContaining(String name) {
+        return commentsRepository.findByTextCommentContaining(name);
+    }
 }

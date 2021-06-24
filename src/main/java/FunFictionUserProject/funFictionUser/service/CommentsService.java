@@ -14,4 +14,6 @@ public interface CommentsService {
     List<Comments> findAll();
 
     Comments saveAndFlush(Comments comments);
+
+    List<Comments> findByTextCommentContaining(String name);
 }

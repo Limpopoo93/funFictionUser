@@ -16,4 +16,6 @@ public interface FunFictionService {
     FunFiction saveAndFlush(FunFiction funFiction);
 
     List<FunFiction> findFunFictionByUserId(Long id);
+
+    List<FunFiction> findByNameFunContaining(String name);
 }
