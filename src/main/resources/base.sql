@@ -1,13 +1,13 @@
 -- auto-generated definition
 create table m_chapter
 (
-    id             bigserial   not null
+    id             bigserial    not null
         constraint m_chapter_pk
             primary key,
-    number_chapter varchar(30) not null,
-    name_chapter   varchar(30) not null,
-    text_chapter   varchar     not null,
-    id_fun_fiction bigint      not null
+    number_chapter varchar(30)  not null,
+    name_chapter   varchar(230) not null,
+    text_chapter   varchar      not null,
+    id_fun_fiction bigint       not null
         constraint m_chapter_m_fun_fiction__fk
             references m_fun_fiction
 );
@@ -33,7 +33,6 @@ create table m_comments
 
 alter table m_comments
     owner to postgres;
-
 -- auto-generated definition
 create table m_fun_fiction
 (
@@ -47,11 +46,15 @@ create table m_fun_fiction
     created           date             not null,
     id_genre          bigint           not null
         constraint m_fun_fiction_m_genre__fk
-            references m_genre
+            references m_genre,
+    id_user           bigint
+        constraint m_fun_fiction_m_user__fk
+            references m_user
 );
 
 alter table m_fun_fiction
     owner to postgres;
+
 -- auto-generated definition
 create table m_genre
 (
@@ -116,7 +119,9 @@ create table m_user
     created      date        not null,
     updated      date        not null,
     name_user    varchar(50) not null,
-    surname_user varchar(40) not null
+    surname_user varchar(40) not null,
+    background   varchar,
+    language     varchar
 );
 
 alter table m_user
@@ -135,4 +140,5 @@ create table m_user_role
 
 alter table m_user_role
     owner to postgres;
+
 
