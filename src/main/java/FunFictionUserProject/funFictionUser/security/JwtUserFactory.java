@@ -3,13 +3,12 @@ package FunFictionUserProject.funFictionUser.security;
 import FunFictionUserProject.funFictionUser.view.Role;
 import FunFictionUserProject.funFictionUser.view.Status;
 import FunFictionUserProject.funFictionUser.view.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/*
 public final class JwtUserFactory {
 
     public JwtUserFactory() {
@@ -36,3 +35,6 @@ public final class JwtUserFactory {
                 ).collect(Collectors.toList());
     }
 }
+
+
+ */

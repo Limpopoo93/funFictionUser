@@ -6,15 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
+@ToString(exclude = {"roles"})
 @Entity
 @Table(name = "m_user")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,10 +31,11 @@ public class User {
     @Column(name = "surname_user")
     private String surnameUser;
     @Column(name = "background")
-    private Status background;
+    private String background;
     @Column(name = "language")
-    private Status language;
+    private String language;
     @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
     private Status status;
     @Column(name = "created")
     private Date created;
@@ -44,19 +47,4 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "id_role", referencedColumnName = "id")})
     private List<Role> roles;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", nameUser='" + nameUser + '\'' +
-                ", surnameUser='" + surnameUser + '\'' +
-                ", status=" + status +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", roles=" + roles +
-                '}';
-    }
 }

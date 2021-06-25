@@ -1,13 +1,12 @@
 package FunFictionUserProject.funFictionUser.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.util.Collection;
 import java.util.Date;
 
-
+/*
 public class JwtUser implements UserDetails {
 
     private final Long id;
@@ -102,3 +101,6 @@ public class JwtUser implements UserDetails {
         return lastPasswordResetDate;
     }
 }
+
+
+ */

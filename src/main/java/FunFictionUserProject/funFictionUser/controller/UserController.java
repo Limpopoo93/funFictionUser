@@ -1,50 +1,41 @@
 package FunFictionUserProject.funFictionUser.controller;
 
+import FunFictionUserProject.funFictionUser.dto.UserListDto;
 import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
-import FunFictionUserProject.funFictionUser.security.JwtTokenProvider;
-import FunFictionUserProject.funFictionUser.service.*;
+import FunFictionUserProject.funFictionUser.service.CommentsService;
+import FunFictionUserProject.funFictionUser.service.FunFictionService;
+import FunFictionUserProject.funFictionUser.service.GenreService;
+import FunFictionUserProject.funFictionUser.service.UserService;
 import FunFictionUserProject.funFictionUser.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static FunFictionUserProject.funFictionUser.dto.UserListDto.fromUser;
 
 //@Controller
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
-
-    private final PasswordEncoder passwordEncoder;
 
     private final FunFictionService funFictionService;
 
     private final GenreService genreService;
 
-    private final ChapterService chapterService;
-
     private final CommentsService commentsService;
 
     @Autowired
-    public UserController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, PasswordEncoder passwordEncoder, FunFictionService funFictionService, GenreService genreService, ChapterService chapterService, CommentsService commentsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
+    public UserController(UserService userService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
         this.funFictionService = funFictionService;
         this.genreService = genreService;
-        this.chapterService = chapterService;
         this.commentsService = commentsService;
     }
 
@@ -52,12 +43,7 @@ public class UserController {
     Сохранение юзера со страницы регистрации (1)
      */
     @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User user) {
-           /*
-            if (!registerRequestDto.getPassword().equals(registerRequestDto.getSecondPassword())) {
-                throw new BadCredentialsException("password haven't correct");
-            }
-            */
+    public ResponseEntity<User> save(@RequestBody User user, HttpSession session) {
         User userCheck = userService.findByLogin(user.getLogin());
         if (userCheck != null) {
             throw new EntityNotFoundException(User.class, user);
@@ -66,11 +52,7 @@ public class UserController {
         user.setCreated(new Date());
         user.setUpdated(new Date());
         User userResult = userService.registerUser(user);
-        String username = userResult.getLogin();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userResult.getPassword()));
-        String token = jwtTokenProvider.createToken(username, userResult.getRoles());
-        //HttpSession session = null;
-        //session.setAttribute("userResult", userResult);
+        session.setAttribute("userResult", userResult);
         //session.setAttribute("token", token);
         return new ResponseEntity<>(userResult, HttpStatus.CREATED);
     }
@@ -79,23 +61,14 @@ public class UserController {
     Вход юзера со страницы входа (3)
      */
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody User user) {
-        String username = user.getLogin();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, user.getPassword()));
-        User userResult = userService.findByLogin(username);
-
-        if (user == null) {
+    public ResponseEntity<UserListDto> loginUser(@RequestBody User user, HttpSession session) {
+        User userResult = userService.findByLogin(user.getLogin());
+        if (userResult == null) {
             throw new EntityNotFoundException(User.class, user);
         }
-
-        if (!passwordEncoder.matches(user.getPassword(), user.getPassword())) {
-            throw new EntityNotFoundException(User.class, user);
-        }
-
-        String token = jwtTokenProvider.createToken(username, user.getRoles());
-        //session.setAttribute("user", user);
-        //session.setAttribute("token", token);
-        return new ResponseEntity<>(userResult, HttpStatus.OK);
+        UserListDto userList = fromUser(userResult);
+        session.setAttribute("user", user);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     /*
@@ -113,7 +86,7 @@ public class UserController {
     /*
     Обновление своей информации со страницы настройки и предпочтений (18, 19)
     */
-    @PostMapping("/updateUser")
+    @PutMapping("/updateUser")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         User userResult = userService.findById(user.getId());
         userResult.setLogin(user.getLogin());

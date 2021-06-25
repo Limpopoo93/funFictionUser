@@ -7,7 +7,6 @@ import FunFictionUserProject.funFictionUser.view.Role;
 import FunFictionUserProject.funFictionUser.view.Status;
 import FunFictionUserProject.funFictionUser.view.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,13 +18,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    //private final BCryptPasswordEncoder passwordEncoder;
     private List<Role> userRoles = new ArrayList<>();
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -62,7 +60,7 @@ public class UserServiceImpl implements UserService {
     public User registerUser(User user) {
         Role roleUser = roleRepository.findByRole("ROLE_USER");
         userRoles.add(roleUser);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setRoles(userRoles);
         user.setStatus(Status.ACTIVE);
         user.setCreated(new Date());
@@ -76,7 +74,7 @@ public class UserServiceImpl implements UserService {
     public User registerAdmin(User user) {
         Role roleUser = roleRepository.findByRole("ROLE_ADMIN");
         userRoles.add(roleUser);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setRoles(userRoles);
         user.setStatus(Status.ACTIVE);
         user.setCreated(new Date());

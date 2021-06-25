@@ -1,7 +1,7 @@
 package FunFictionUserProject.funFictionUser.controller;
 
+import FunFictionUserProject.funFictionUser.dto.UserListDto;
 import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
-import FunFictionUserProject.funFictionUser.security.JwtTokenProvider;
 import FunFictionUserProject.funFictionUser.service.FunFictionService;
 import FunFictionUserProject.funFictionUser.service.GenreService;
 import FunFictionUserProject.funFictionUser.service.RoleService;
@@ -10,10 +10,9 @@ import FunFictionUserProject.funFictionUser.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,18 +22,14 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private List<Role> userRoles = new ArrayList<>();
     private final FunFictionService funFictionService;
     private final GenreService genreService;
 
     @Autowired
-    public AdminController(UserService userService, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, RoleService roleService, FunFictionService funFictionService, GenreService genreService) {
+    public AdminController(UserService userService, RoleService roleService, FunFictionService funFictionService, GenreService genreService) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
         this.roleService = roleService;
         this.funFictionService = funFictionService;
         this.genreService = genreService;
@@ -44,13 +39,7 @@ public class AdminController {
     Регистрации админа (2)
      */
     @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User user) {
-           /*
-            if (!registerRequestDto.getPassword().equals(registerRequestDto.getSecondPassword())) {
-                throw new BadCredentialsException("password haven't correct");
-            }
-
-            */
+    public ResponseEntity<User> save(@RequestBody User user, HttpSession session) {
         User userCheck = userService.findByLogin(user.getLogin());
         if (userCheck != null) {
             throw new EntityNotFoundException(User.class, user);
@@ -59,12 +48,7 @@ public class AdminController {
         user.setCreated(new Date());
         user.setUpdated(new Date());
         User userResult = userService.registerUser(user);
-        String username = userResult.getLogin();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userResult.getPassword()));
-        String token = jwtTokenProvider.createToken(username, userResult.getRoles());
-        //HttpSession session = null;
-        //session.setAttribute("userResult", userResult);
-        //session.setAttribute("token", token);
+        session.setAttribute("userResult", userResult);
         return new ResponseEntity<>(userResult, HttpStatus.CREATED);
     }
 
@@ -85,9 +69,14 @@ public class AdminController {
     лист всех пользователей со страницы админа (5)
      */
     @GetMapping("/allUserByAdmin")
-    public ResponseEntity<List<User>> getAllByUser() {
+    public ResponseEntity<List<UserListDto>> getAllByUser() {
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserListDto> userList = new ArrayList<>();
+        for (User user : users) {
+            UserListDto userListDto = new UserListDto();
+            userList.add(userListDto.fromUser(user));
+        }
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     /*
