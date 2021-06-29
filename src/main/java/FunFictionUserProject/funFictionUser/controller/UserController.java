@@ -133,7 +133,7 @@ public class UserController {
         Genre genre = genreService.findByTypeGenre(funFiction.getGenre().getTypeGenre());
         funFiction.setGenre(genre);
         User userResult = userService.findById(user.getId());
-        funFiction.setUser(user);
+        funFiction.setUser(userResult);
         FunFiction funFictionResult = funFictionService.save(funFiction);
         return new ResponseEntity<>(funFictionResult, HttpStatus.OK);
     }
