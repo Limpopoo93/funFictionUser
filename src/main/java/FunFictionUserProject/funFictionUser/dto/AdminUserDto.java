@@ -5,9 +5,11 @@ import FunFictionUserProject.funFictionUser.view.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AdminUserDto {
+public class AdminUserDto implements Serializable {
     private Long id;
     private String username;
     private String firstName;

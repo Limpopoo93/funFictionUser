@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
+import static FunFictionUserProject.funFictionUser.util.UrlConstant.*;
+
 @RestController
-@RequestMapping("/admin")
+@RequestMapping(ADMIN)
 public class AdminController {
 
     private final UserService userService;
@@ -38,7 +41,7 @@ public class AdminController {
     /*
     Регистрации админа (2)
      */
-    @PostMapping("/save")
+    @PostMapping(SAVE)
     public ResponseEntity<User> save(@RequestBody User user, HttpSession session) {
         User userCheck = userService.findByLogin(user.getLogin());
         if (userCheck != null) {
@@ -48,17 +51,17 @@ public class AdminController {
         user.setCreated(new Date());
         user.setUpdated(new Date());
         User userResult = userService.registerUser(user);
-        session.setAttribute("userResult", userResult);
+        session.setAttribute(USER_RESULT, userResult);
         return new ResponseEntity<>(userResult, HttpStatus.CREATED);
     }
 
     /*
     функция для назначения админом со списка юзеров (8)
      */
-    @GetMapping("/updatedUserByAdmin/{id}")
-    public ResponseEntity<User> updatedUserByAdmin(@PathVariable("id") Long id) {
+    @GetMapping(UPDATE_ADMIN)
+    public ResponseEntity<User> updatedUserByAdmin(@PathVariable(ID) Long id) {
         User userSearch = userService.findById(id);
-        Role role = roleService.findByRole("ROLE_ADMIN");
+        Role role = roleService.findByRole(ROLE_ADMIN);
         userRoles.add(role);
         userSearch.setRoles(userRoles);
         userService.saveAndFlush(userSearch);
@@ -68,7 +71,7 @@ public class AdminController {
     /*
     лист всех пользователей со страницы админа (5)
      */
-    @GetMapping("/allUserByAdmin")
+    @GetMapping(LIST_USER)
     public ResponseEntity<List<UserListDto>> getAllByUser() {
         List<User> users = userService.findAll();
         List<UserListDto> userList = new ArrayList<>();
@@ -82,8 +85,8 @@ public class AdminController {
     /*
     удаление юзера со страницы админа (6)
      */
-    @DeleteMapping("/deleteUserByAdmin/{id}")
-    public ResponseEntity<User> deleteUserByAdmin(@PathVariable("id") Long id) {
+    @DeleteMapping(DELETE_USER)
+    public ResponseEntity<User> deleteUserByAdmin(@PathVariable(ID) Long id) {
         User user = userService.findById(id);
         userService.delete(user);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -92,8 +95,8 @@ public class AdminController {
     /*
     блокировка юзера со страницы админа (7)
     */
-    @DeleteMapping("/blockUserByAdmin/{id}")
-    public ResponseEntity<User> blockUserByAdmin(@PathVariable("id") Long id) {
+    @DeleteMapping(BLOCK_USER)
+    public ResponseEntity<User> blockUserByAdmin(@PathVariable(ID) Long id) {
         User user = userService.findById(id);
         user.setStatus(Status.BLOCK);
         User userResult = userService.saveAndFlush(user);
@@ -103,8 +106,8 @@ public class AdminController {
     /*
     переход на личную информацию каждого юзера со страницы админа (9) (10) (11)
     */
-    @GetMapping("/infoUserByAdmin/{id}")
-    public ResponseEntity<User> infoUserByAdmin(@PathVariable("id") Long id) {
+    @GetMapping(INFO_USER)
+    public ResponseEntity<User> infoUserByAdmin(@PathVariable(ID) Long id) {
         User user = userService.findById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -112,8 +115,8 @@ public class AdminController {
     /*
     удалить произведение со списка произведений юзера (12)
     */
-    @DeleteMapping("/deleteFunFunficByAdmin/{id}")
-    public ResponseEntity<FunFiction> deleteFunFunficByAdmin(@PathVariable("id") Long id) {
+    @DeleteMapping(DELETE_FUN_FIC_ADMIN)
+    public ResponseEntity<FunFiction> deleteFunFunficByAdmin(@PathVariable(ID) Long id) {
         FunFiction funFiction = funFictionService.findById(id);
         funFictionService.delete(funFiction);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -122,7 +125,7 @@ public class AdminController {
     /*
     редактировать произведение со списка произведений юзера (12)
     */
-    @PostMapping("/updatedFunficByAdmin")
+    @PostMapping(UPDATE_FUN_FIC_ADMIN)
     public ResponseEntity<FunFiction> updatedFunFunficByAdmin(@RequestBody FunFiction funFiction) {
         FunFiction funFictionResult = funFictionService.findById(funFiction.getId());
         funFictionResult.setNameFun(funFiction.getNameFun());

@@ -7,18 +7,24 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
+
+import static FunFictionUserProject.funFictionUser.util.DataBaseConstant.GENRE_TABLE;
+import static FunFictionUserProject.funFictionUser.util.DataConstant.DESCRIPTION;
+import static FunFictionUserProject.funFictionUser.util.DataConstant.TYPE_GENRE;
+
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
 @ToString()
 @Entity
-@Table(name = "m_genre")
-public class Genre {
+@Table(name = GENRE_TABLE)
+public class Genre implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "type_genre")
+    @Column(name = TYPE_GENRE)
     private String typeGenre;
-    @Column(name = "description")
+    @Column(name = DESCRIPTION)
     private String description;
 }

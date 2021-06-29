@@ -18,10 +18,12 @@ import java.util.Date;
 import java.util.List;
 
 import static FunFictionUserProject.funFictionUser.dto.UserListDto.fromUser;
+import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
+import static FunFictionUserProject.funFictionUser.util.UrlConstant.*;
+import static FunFictionUserProject.funFictionUser.util.UrlConstant.USER;
 
-//@Controller
 @RestController
-@RequestMapping("/user")
+@RequestMapping(USER)
 public class UserController {
     private final UserService userService;
 
@@ -42,7 +44,7 @@ public class UserController {
     /*
     Сохранение юзера со страницы регистрации (1)
      */
-    @PostMapping("/save")
+    @PostMapping(SAVE)
     public ResponseEntity<User> save(@RequestBody User user, HttpSession session) {
         User userCheck = userService.findByLogin(user.getLogin());
         if (userCheck != null) {
@@ -52,7 +54,7 @@ public class UserController {
         user.setCreated(new Date());
         user.setUpdated(new Date());
         User userResult = userService.registerUser(user);
-        session.setAttribute("userResult", userResult);
+        session.setAttribute(USER_RESULT, userResult);
         //session.setAttribute("token", token);
         return new ResponseEntity<>(userResult, HttpStatus.CREATED);
     }
@@ -60,21 +62,24 @@ public class UserController {
     /*
     Вход юзера со страницы входа (3)
      */
-    @PostMapping("/login")
+    @PostMapping(LOGIN_URL)
     public ResponseEntity<UserListDto> loginUser(@RequestBody User user, HttpSession session) {
         User userResult = userService.findByLogin(user.getLogin());
         if (userResult == null) {
             throw new EntityNotFoundException(User.class, user);
         }
+        if(userResult.getStatus().equals(Status.BLOCK) || userResult.getStatus().equals(Status.DELETE)){
+            throw new EntityNotFoundException(User.class, user);
+        }
         UserListDto userList = fromUser(userResult);
-        session.setAttribute("user", user);
+        session.setAttribute(USER, user);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     /*
     Настройка личных предпочтений после регистрации (15, 16)
      */
-    @PostMapping("/userSettingPersonalData")
+    @PostMapping(SETTING_USER)
     public ResponseEntity<User> userSetSettingPersonalUser(@RequestBody User user) {
         User userResult = userService.findById(user.getId());
         userResult.setBackground(user.getBackground());
@@ -86,7 +91,7 @@ public class UserController {
     /*
     Обновление своей информации со страницы настройки и предпочтений (18, 19)
     */
-    @PutMapping("/updateUser")
+    @PutMapping(UPDATE_USER)
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         User userResult = userService.findById(user.getId());
         userResult.setLogin(user.getLogin());
@@ -104,7 +109,7 @@ public class UserController {
     /*
     Список предпочтений юзера со страницы настройки юзера (20)
     */
-    @GetMapping("/listAllFunFiction")
+    @GetMapping(LIST_FUN_FIC)
     public ResponseEntity<List<FunFiction>> listAllFunFiction(@RequestBody User user) {
         List<FunFiction> funFictions = funFictionService.findFunFictionByUserId(user.getId());
         return new ResponseEntity<>(funFictions, HttpStatus.OK);
@@ -113,8 +118,8 @@ public class UserController {
     /*
     удалить произведение со страницы личной информации (22)
      */
-    @DeleteMapping("/deleteFunFicByUser/{id}")
-    public ResponseEntity<FunFiction> deleteFunFicByUser(@PathVariable("id") Long id) {
+    @DeleteMapping(DELETE_FUN_FIC)
+    public ResponseEntity<FunFiction> deleteFunFicByUser(@PathVariable(ID) Long id) {
         FunFiction funFiction = funFictionService.findById(id);
         funFictionService.delete(funFiction);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -123,7 +128,7 @@ public class UserController {
     /*
     добавление произведения со страницы личной информации (23)
     */
-    @PostMapping("/addFunFicByUser")
+    @PostMapping(ADD_FUN_FIC)
     public ResponseEntity<FunFiction> addFunFicByUser(@RequestBody FunFiction funFiction, @RequestBody User user) {
         Genre genre = genreService.findByTypeGenre(funFiction.getGenre().getTypeGenre());
         funFiction.setGenre(genre);
@@ -136,7 +141,7 @@ public class UserController {
     /*
     редактирование произведения со страницы личной информации (21)
     */
-    @PostMapping("/updatedFunFicByUser")
+    @PostMapping(UPDATE_FUN_FIC)
     public ResponseEntity<FunFiction> updatedFunFicByUser(@RequestBody FunFiction funFiction) {
         FunFiction funFictionResult = funFictionService.findById(funFiction.getId());
         if (funFiction.getGenre().getTypeGenre() != null) {
@@ -152,9 +157,9 @@ public class UserController {
     /*
     поиск произведений (25)
     */
-    @GetMapping("/searchFunFiction/{name}")
-    public ResponseEntity<List<FunFiction>> searchFunFiction(@PathVariable("id") String name) {
-        List<FunFiction> funFictionList = new ArrayList<>();
+    @GetMapping(SEARCH_FUN_FIC)
+    public ResponseEntity<List<FunFiction>> searchFunFiction(@PathVariable(NAME_USER) String name) {
+        List<FunFiction> funFictionList;
         funFictionList = funFictionService.findByNameFunContaining(name);
         if (funFictionList.isEmpty()) {
             List<Comments> comments = commentsService.findByTextCommentContaining(name);
