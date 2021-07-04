@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
-@ToString()
+@ToString(exclude = {"user", "chapter"})
 @Entity
 @Table(name = "m_comments")
 public class Comments {
@@ -26,6 +26,6 @@ public class Comments {
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "id_fun_fiction", nullable = false)
-    private FunFiction funFiction;
+    @JoinColumn(name = "id_chapter", nullable = false)
+    private Chapter chapter;
 }

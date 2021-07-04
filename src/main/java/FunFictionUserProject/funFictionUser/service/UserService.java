@@ -20,4 +20,6 @@ public interface UserService {
     public User registerUser(User user);
 
     public User registerAdmin(User user);
+
+    User findByEmail(String email);
 }

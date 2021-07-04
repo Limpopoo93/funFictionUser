@@ -190,16 +190,17 @@ When Tony leaves the hospital, Barnes is sent to Wakanda at the invitation of T'
 Cap is silent on all the outrages, and Tony can''t help but admit that every day the feeling of loneliness recedes a little.
 
 A month later, Steve tells him what Zemo wanted to do. And about how he falsified the tape with the murder of his parents, which was committed by another Hydra agent, one of those five, from a bunker in Siberia. Cap, Sam, and Natasha went there while Tony was still in the hospital. Two weeks later, Tony finally moves to the Base. He tells everyone that it''s just more convenient for him, but in fact, because he doesn''t feel lonely there. Almost feels like he has a family. And Steve. At the base, Steve, to whom Tony has already become so attached to his soul that now he is afraid of it.', 9);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (1, 'wery well', '2021-06-24', 1, 1);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (2, 'its good', '2021-06-24', 2, 2);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (3, 'well', '2021-06-24', 3, 3);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (4, 'like', '2021-06-24', 4, 4);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (5, 'super', '2021-06-24', 5, 5);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (6, 'so so', '2021-06-24', 6, 6);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (7, 'good', '2021-06-24', 7, 7);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (8, 'nice', '2021-06-24', 8, 8);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (9, 'its bellisimo', '2021-06-24', 9, 9);
-INSERT INTO public.m_comments (id, text_comment, created, id_user, id_fun_fiction) VALUES (10, 'wery well', '2021-06-24', 10, 10);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('wery well', '2021-06-24', 1, 12);
+insert into postgres.public.m_comments( text_comment, created, id_user, id_chapter) VALUES ('its good', '2021-06-24', 2, 13);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('well', '2021-06-24', 3, 14);
+insert into postgres.public.m_comments( text_comment, created, id_user, id_chapter) VALUES ('like', '2021-06-24', 4, 15);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('super', '2021-06-24', 5, 16);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('so so', '2021-06-24', 6, 17);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('good', '2021-06-24', 7, 18);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('nice', '2021-06-24', 8, 19);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('its bellisimo', '2021-06-24', 9, 20);
+insert into postgres.public.m_comments(text_comment, created, id_user, id_chapter) VALUES ('wery well', '2021-06-24', 10, 21);
+
 INSERT INTO public.m_fun_fiction (id, name_fun, short_description, rating, likes, created, id_genre, id_user) VALUES (1, 'Turn everything over', 'Having lost his beloved dog, Arseny unexpectedly acquires a new acquaintance, a mysterious boy who moved to St. And when someone comes to his doorstep with his found little animal and comes in for tea, Popov''s head blows off. He is tormented by doubts about feelings for two, as it seemed to him, different people, but who will he choose in the end and where will this green-eyed man lead him?', 3, 50, '2021-06-24', 1, 1);
 INSERT INTO public.m_fun_fiction (id, name_fun, short_description, rating, likes, created, id_genre, id_user) VALUES (2, 'Sleeping Beauty of the Radiation Age', 'The twenty-third century is an era saturated with radiation. Someone rushes about in vain in search of a way into the past', 4, 30, '2021-06-24', 2, 1);
 INSERT INTO public.m_fun_fiction (id, name_fun, short_description, rating, likes, created, id_genre, id_user) VALUES (3, 'Completion of "Night Changes"', 'The concluding chapters of the Night Changes fanfic', 5, 76, '2021-06-24', 3, 6);

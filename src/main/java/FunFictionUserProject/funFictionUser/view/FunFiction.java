@@ -3,6 +3,7 @@ package FunFictionUserProject.funFictionUser.view;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
+@ToString(exclude = {"genre", "tags", "user"})
 @Entity
 @Table(name = "m_fun_fiction")
 public class FunFiction {

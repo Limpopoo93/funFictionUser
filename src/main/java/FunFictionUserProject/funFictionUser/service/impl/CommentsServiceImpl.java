@@ -42,4 +42,9 @@ public class CommentsServiceImpl implements CommentsService {
     public List<Comments> findByTextCommentContaining(String name) {
         return commentsRepository.findByTextCommentContaining(name);
     }
+
+    @Override
+    public List<Comments> findAllByChapterId(Long id) {
+        return commentsRepository.findAllByChapterId(id);
+    }
 }

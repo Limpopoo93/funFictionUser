@@ -16,4 +16,6 @@ public interface CommentsService {
     Comments saveAndFlush(Comments comments);
 
     List<Comments> findByTextCommentContaining(String name);
+
+    List<Comments> findAllByChapterId(Long id);
 }

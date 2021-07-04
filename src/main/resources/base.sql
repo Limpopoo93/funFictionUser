@@ -1,4 +1,5 @@
 -- auto-generated definition
+-- auto-generated definition
 create table m_chapter
 (
     id             bigserial    not null
@@ -14,6 +15,7 @@ create table m_chapter
 
 alter table m_chapter
     owner to postgres;
+
 
 -- auto-generated definition
 create table m_comments

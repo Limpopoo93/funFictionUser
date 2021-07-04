@@ -1,11 +1,8 @@
 package FunFictionUserProject.funFictionUser.controller;
 
-import FunFictionUserProject.funFictionUser.dto.UserListDto;
+import FunFictionUserProject.funFictionUser.dto.*;
 import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
-import FunFictionUserProject.funFictionUser.service.CommentsService;
-import FunFictionUserProject.funFictionUser.service.FunFictionService;
-import FunFictionUserProject.funFictionUser.service.GenreService;
-import FunFictionUserProject.funFictionUser.service.UserService;
+import FunFictionUserProject.funFictionUser.service.*;
 import FunFictionUserProject.funFictionUser.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +28,15 @@ public class UserController {
 
     private final CommentsService commentsService;
 
+    private final ChapterService chapterService;
+
     @Autowired
-    public UserController(UserService userService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService) {
+    public UserController(UserService userService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService, ChapterService chapterService) {
         this.userService = userService;
         this.funFictionService = funFictionService;
         this.genreService = genreService;
         this.commentsService = commentsService;
+        this.chapterService = chapterService;
     }
 
     /*
@@ -52,7 +52,8 @@ public class UserController {
         user.setCreated(new Date());
         user.setUpdated(new Date());
         User userResult = userService.registerUser(user);
-        session.setAttribute("userResult", userResult);
+        UserListDto userListDto = UserListDto.fromUser(user);
+        session.setAttribute("userListDto", userListDto);
         //session.setAttribute("token", token);
         return new ResponseEntity<>(userResult, HttpStatus.CREATED);
     }
@@ -66,8 +67,12 @@ public class UserController {
         if (userResult == null) {
             throw new EntityNotFoundException(User.class, user);
         }
-        UserListDto userList = fromUser(userResult);
-        session.setAttribute("user", user);
+       //List<FunFiction> funFictions = funFictionService.findAll();
+
+
+       UserListDto userList = fromUser(userResult);
+        session.setAttribute("userListDto", userList);
+
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
@@ -104,10 +109,14 @@ public class UserController {
     /*
     Список предпочтений юзера со страницы настройки юзера (20)
     */
-    @GetMapping("/listAllFunFiction")
-    public ResponseEntity<List<FunFiction>> listAllFunFiction(@RequestBody User user) {
-        List<FunFiction> funFictions = funFictionService.findFunFictionByUserId(user.getId());
-        return new ResponseEntity<>(funFictions, HttpStatus.OK);
+    @GetMapping("/listFunFicById/{id}")
+    public ResponseEntity<List<FunFicRequestDto>> listAllFunFiction(@PathVariable("id") Long id) {
+        List<FunFiction> funFictions = funFictionService.findFunFictionByUserId(id);
+        List<FunFicRequestDto> funFicRequestDtoList = new ArrayList<>();
+        for (FunFiction funfic: funFictions) {
+            funFicRequestDtoList.add(FunFicRequestDto.fromFunFic(funfic));
+        }
+        return new ResponseEntity<>(funFicRequestDtoList, HttpStatus.OK);
     }
 
     /*
@@ -116,6 +125,14 @@ public class UserController {
     @DeleteMapping("/deleteFunFicByUser/{id}")
     public ResponseEntity<FunFiction> deleteFunFicByUser(@PathVariable("id") Long id) {
         FunFiction funFiction = funFictionService.findById(id);
+        List<Chapter> chapterList = chapterService.findChapterByFunFictionId(funFiction.getId());
+        for (Chapter chapter: chapterList) {
+            List<Comments> commentsList = commentsService.findAllByChapterId(chapter.getId());
+            for(Comments comments: commentsList){
+                commentsService.delete(comments);
+            }
+            chapterService.delete(chapter);
+        }
         funFictionService.delete(funFiction);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -124,12 +141,18 @@ public class UserController {
     добавление произведения со страницы личной информации (23)
     */
     @PostMapping("/addFunFicByUser")
-    public ResponseEntity<FunFiction> addFunFicByUser(@RequestBody FunFiction funFiction, @RequestBody User user) {
-        Genre genre = genreService.findByTypeGenre(funFiction.getGenre().getTypeGenre());
-        funFiction.setGenre(genre);
-        User userResult = userService.findById(user.getId());
-        funFiction.setUser(user);
-        FunFiction funFictionResult = funFictionService.save(funFiction);
+    public ResponseEntity<FunFiction> addFunFicByUser(@RequestBody FunFicRequestDto funFiction) {
+        FunFiction funFictionResult = new FunFiction();
+        Genre genre = genreService.findByTypeGenre(funFiction.getGenre());
+        User user = userService.findById(funFiction.getIdUser());
+        funFictionResult.setGenre(genre);
+        funFictionResult.setCreated(new Date());
+        funFictionResult.setNameFun(funFiction.getNameFun());
+        funFictionResult.setShortDescription(funFiction.getShortDescription());
+        funFictionResult.setLike(0);
+        funFictionResult.setRating(0.0);
+        funFictionResult.setUser(user);
+        funFictionService.save(funFictionResult);
         return new ResponseEntity<>(funFictionResult, HttpStatus.OK);
     }
 
@@ -153,18 +176,79 @@ public class UserController {
     поиск произведений (25)
     */
     @GetMapping("/searchFunFiction/{name}")
-    public ResponseEntity<List<FunFiction>> searchFunFiction(@PathVariable("id") String name) {
-        List<FunFiction> funFictionList = new ArrayList<>();
+    public ResponseEntity<List<FunFiction>> searchFunFiction(@PathVariable("name") String name) {
+        List<FunFiction> funFictionList;
         funFictionList = funFictionService.findByNameFunContaining(name);
         if (funFictionList.isEmpty()) {
             List<Comments> comments = commentsService.findByTextCommentContaining(name);
             if (comments != null) {
                 for (Comments comment : comments) {
-                    FunFiction funFictionResult = funFictionService.findById(comment.getFunFiction().getId());
+                    FunFiction funFictionResult = funFictionService.findById(comment.getChapter().getFunFiction().getId());
                     funFictionList.add(funFictionResult);
                 }
             }
         }
         return new ResponseEntity<>(funFictionList, HttpStatus.OK);
+    }
+
+    /*
+Просто лист fun fic
+ */
+    @GetMapping("/listFunFic")
+    public ResponseEntity<List<FunFicRequestDto>> listFunFic() {
+       List<FunFiction> funFictionList = funFictionService.findAll();
+      List<FunFicRequestDto> funFicRequestDtoList = new ArrayList<>();
+        for (FunFiction funfic: funFictionList) {
+            funFicRequestDtoList.add(FunFicRequestDto.fromFunFic(funfic));
+        }
+        return new ResponseEntity<>(funFicRequestDtoList, HttpStatus.OK);
+    }
+    /*
+    вывод статьи (глав) определенного фанфика с list funfic стартовая страница
+ */
+    @GetMapping("/chapterByFunFic/{id}")
+    public ResponseEntity<List<ChapterRequestDto>> chapterByFunFic(@PathVariable("id") Long id) {
+     List<Chapter> chapterList=  chapterService.findChapterByFunFictionId(id);
+        List<ChapterRequestDto> chapterRequestDtos = new ArrayList<>();
+        List<CommentRequestDto> commentRequestDtoList = new ArrayList<>();
+        CommentRequestDto commentRequestDto = new CommentRequestDto();
+        for (Chapter chapter: chapterList) {
+            List<Comments> commentsList = commentsService.findAllByChapterId(chapter.getId());
+            for (Comments comments: commentsList){
+                commentRequestDto.setId(comments.getId());
+                commentRequestDto.setNameUser(comments.getUser().getNameUser());
+                commentRequestDto.setSurnameUser(comments.getUser().getSurnameUser());
+                commentRequestDto.setCreated(comments.getCreated());
+                commentRequestDto.setTextComment(comments.getTextComment());
+                commentRequestDto.setIdChapter(chapter.getId());
+                commentRequestDtoList.add(commentRequestDto);
+            }
+            chapterRequestDtos.add(ChapterRequestDto.fromFunFic(chapter,commentRequestDtoList));
+        }
+        return new ResponseEntity<>(chapterRequestDtos, HttpStatus.OK);
+    }
+
+    /*
+добавление комментария
+*/
+    @PostMapping("/commentSave")
+    public ResponseEntity<CommentRequest> updatedFunFicByUser(@RequestBody CommentRequest commentDto) {
+         User user = userService.findByEmail(commentDto.getEmail());
+        Chapter chapter = chapterService.findById(commentDto.getIdChapter());
+        Comments comments = new Comments();
+        comments.setTextComment(commentDto.getTextComments());
+        comments.setCreated(new Date());
+        comments.setChapter(chapter);
+        comments.setUser(user);
+        commentsService.save(comments);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
+    }
+    /*
+    Вывод всех жанров для добавления fun fic
+ */
+    @GetMapping("/listAllGenre")
+    public ResponseEntity<List<Genre>> listAllGenre() {
+    List<Genre> genreList = genreService.findAll();
+        return new ResponseEntity<>(genreList, HttpStatus.OK);
     }
 }

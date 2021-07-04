@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
+@ToString(exclude = {"funFictions"})
 @Entity
 @Table(name = "m_tags")
 public class Tags {
@@ -24,12 +25,4 @@ public class Tags {
     @ManyToMany(mappedBy = "tags")
     private List<FunFiction> funFictions;
 
-    @Override
-    public String toString() {
-        return "Tags{" +
-                "id=" + id +
-                ", typeTags='" + typeTags + '\'' +
-                ", funFictions=" + funFictions +
-                '}';
-    }
 }

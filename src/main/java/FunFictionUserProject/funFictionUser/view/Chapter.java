@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
-@ToString()
+@ToString(exclude = {"funFiction"})
 @Entity
 @Table(name = "m_chapter")
 //Главы
