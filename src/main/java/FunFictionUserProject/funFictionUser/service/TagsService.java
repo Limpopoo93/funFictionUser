@@ -14,4 +14,6 @@ public interface TagsService {
     List<Tags> findAll();
 
     Tags saveAndFlush(Tags tags);
+
+    Tags findByTypeTags(String typeTag);
 }

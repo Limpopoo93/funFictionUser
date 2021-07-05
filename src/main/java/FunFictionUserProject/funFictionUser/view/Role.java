@@ -15,7 +15,7 @@ import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
-@ToString(exclude = {USERS})
+@ToString(exclude = {"users"})
 @Entity
 @Table(name = ROLE_TABLE)
 public class Role implements Serializable {

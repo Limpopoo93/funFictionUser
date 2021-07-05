@@ -3,6 +3,7 @@ package FunFictionUserProject.funFictionUser.controller;
 import FunFictionUserProject.funFictionUser.dto.ChapterRequestDto;
 import FunFictionUserProject.funFictionUser.dto.CommentRequestDto;
 import FunFictionUserProject.funFictionUser.dto.FunFicRequestDto;
+import FunFictionUserProject.funFictionUser.dto.TagsRequestDto;
 import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
 import FunFictionUserProject.funFictionUser.service.*;
 import FunFictionUserProject.funFictionUser.view.*;
@@ -28,13 +29,16 @@ public class WorkingController {
 
     private final ChapterService chapterService;
 
+    private final TagsService tagsService;
+
     @Autowired
-    public WorkingController(UserService userService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService, ChapterService chapterService) {
+    public WorkingController(UserService userService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService, ChapterService chapterService, TagsService tagsService) {
         this.userService = userService;
         this.funFictionService = funFictionService;
         this.genreService = genreService;
         this.commentsService = commentsService;
         this.chapterService = chapterService;
+        this.tagsService = tagsService;
     }
 
     /*
@@ -86,7 +90,8 @@ public class WorkingController {
     @PostMapping("/addFunFicByUser")
     public ResponseEntity<FunFiction> addFunFicByUser(@RequestBody FunFicRequestDto funFiction) {
         FunFiction funFictionResult = new FunFiction();
-        Genre genre = genreService.findByTypeGenre(funFiction.getGenre());
+        List<Tags> tagsList = new ArrayList<>();
+            Genre genre = genreService.findByTypeGenre(funFiction.getGenre());
         User user = userService.findById(funFiction.getIdUser());
         funFictionResult.setGenre(genre);
         funFictionResult.setCreated(new Date());
@@ -95,8 +100,13 @@ public class WorkingController {
         funFictionResult.setLike(0);
         funFictionResult.setRating(0.0);
         funFictionResult.setUser(user);
+        for(String tags: funFiction.getTypeTags()){
+            Tags tagsResult = tagsService.findByTypeTags(tags);
+            tagsList.add(tagsResult);
+        }
+        funFictionResult.setTags(tagsList);
         funFictionService.save(funFictionResult);
-        return new ResponseEntity<>(funFictionResult, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /*
@@ -153,5 +163,21 @@ public class WorkingController {
     public ResponseEntity<List<Genre>> listAllGenre() {
         List<Genre> genreList = genreService.findAll();
         return new ResponseEntity<>(genreList, HttpStatus.OK);
+    }
+
+    /*
+Вывод всех тэгов
+*/
+            /*
+ИСПОЛЬЗУЕТСЯ
+ */
+    @GetMapping("/listAllTags")
+    public ResponseEntity<List<TagsRequestDto>> listAllTags() {
+        List<Tags> tagsList = tagsService.findAll();
+        List<TagsRequestDto> tagsRequestList = new ArrayList<>();
+        for (Tags tags : tagsList) {
+            tagsRequestList.add(TagsRequestDto.fromTags(tags));
+        }
+        return new ResponseEntity<>(tagsRequestList, HttpStatus.OK);
     }
 }

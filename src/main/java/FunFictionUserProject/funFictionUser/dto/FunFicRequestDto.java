@@ -26,7 +26,8 @@ public class FunFicRequestDto implements Serializable {
     private String genre;
     private Long idUser;
    // private List<String> tags;
-   // private List<Tags> tags;
+   private List<Tags> tags;
+   private List<String> typeTags;
 /*
     public FunFiction toFunFic() {
         FunFiction funFiction = new FunFiction();

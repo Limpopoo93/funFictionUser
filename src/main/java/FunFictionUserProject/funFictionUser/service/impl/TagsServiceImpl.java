@@ -37,4 +37,9 @@ public class TagsServiceImpl implements TagsService {
     public Tags saveAndFlush(Tags tags) {
         return tagsRepository.saveAndFlush(tags);
     }
+
+    @Override
+    public Tags findByTypeTags(String typeTag) {
+        return tagsRepository.findByTypeTags(typeTag);
+    }
 }
