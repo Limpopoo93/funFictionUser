@@ -16,6 +16,7 @@ public class ChapterRequestDto implements Serializable {
     private int numberChapter;
     private String nameChapter;
     private String textChapter;
+    private long idFunFic;
     private List<CommentRequestDto> commentRequestDtos;
 
     public static ChapterRequestDto fromFunFic(Chapter chapter, List<CommentRequestDto> commentRequestDto) {
@@ -25,6 +26,17 @@ public class ChapterRequestDto implements Serializable {
         chapterRequestDto.setNameChapter(chapter.getNameChapter());
         chapterRequestDto.setTextChapter(chapter.getTextChapter());
         chapterRequestDto.setCommentRequestDtos(commentRequestDto);
+        chapterRequestDto.setIdFunFic(chapter.getFunFiction().getId());
+        return chapterRequestDto;
+    }
+
+    public static ChapterRequestDto fromChapter(Chapter chapter) {
+        ChapterRequestDto chapterRequestDto = new ChapterRequestDto();
+        chapterRequestDto.setId(chapter.getId());
+        chapterRequestDto.setNumberChapter(chapter.getNumberChapter());
+        chapterRequestDto.setNameChapter(chapter.getNameChapter());
+        chapterRequestDto.setTextChapter(chapter.getTextChapter());
+        chapterRequestDto.setIdFunFic(chapter.getFunFiction().getId());
         return chapterRequestDto;
     }
 }

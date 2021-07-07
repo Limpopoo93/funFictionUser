@@ -6,30 +6,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
-
-import static FunFictionUserProject.funFictionUser.util.DataBaseConstant.CHAPTER_TABLE;
-import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
 
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode()
 @ToString(exclude = {"funFiction"})
 @Entity
-@Table(name = CHAPTER_TABLE)
+@Table(name = "m_chapter")
 //Главы
 public class Chapter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = NUMBER_CHAPTER)
+    @Column(name = "number_chapter")
     private int numberChapter;
-    @Column(name = NAME_CHAPTER)
+    @Column(name = "name_chapter")
     private String nameChapter;
-    @Column(name = TEXT_CHAPTER)
+    @Column(name = "text_chapter")
     private String textChapter;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = ID_FUN_FIC, nullable = false)
+    @JoinColumn(name = "id_fun_fiction", nullable = false)
     private FunFiction funFiction;
 }

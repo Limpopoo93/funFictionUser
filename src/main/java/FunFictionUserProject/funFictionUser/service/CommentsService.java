@@ -18,4 +18,6 @@ public interface CommentsService {
     List<Comments> findByTextCommentContaining(String name);
 
     List<Comments> findAllByChapterId(Long id);
+
+    List<Comments> findAllByUserId(Long id);
 }

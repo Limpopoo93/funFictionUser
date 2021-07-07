@@ -3,12 +3,15 @@ package FunFictionUserProject.funFictionUser.dto;
 import FunFictionUserProject.funFictionUser.view.Status;
 import FunFictionUserProject.funFictionUser.view.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminUserDto implements Serializable {
     private Long id;
     private String username;

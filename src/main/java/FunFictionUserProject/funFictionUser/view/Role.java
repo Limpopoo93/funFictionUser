@@ -10,7 +10,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import static FunFictionUserProject.funFictionUser.util.DataBaseConstant.ROLE_TABLE;
-import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
+import static FunFictionUserProject.funFictionUser.util.DataConstant.ROLES;
+import static FunFictionUserProject.funFictionUser.util.DataConstant.TYPE_ROLE;
 
 @Data
 @RequiredArgsConstructor

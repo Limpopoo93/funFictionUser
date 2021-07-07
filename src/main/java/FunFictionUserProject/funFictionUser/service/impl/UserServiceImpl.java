@@ -9,6 +9,7 @@ import FunFictionUserProject.funFictionUser.view.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,38 +27,49 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
+    @Transactional
     @Override
     public User save(User user) {
+        log.info("user by save in userService");
         return userRepository.save(user);
     }
 
     @Override
     public User findById(Long id) {
+        log.info("id by findById in userService");
         return userRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     @Override
     public void delete(User user) {
+        log.info("user by delete in userService");
         userRepository.delete(user);
     }
 
     @Override
     public List<User> findAll() {
+        log.info("List user by findAll in userService");
         return userRepository.findAll();
     }
 
+    @Transactional
     @Override
     public User saveAndFlush(User user) {
+        log.info("user by saveAndFlush in userService");
         return userRepository.saveAndFlush(user);
     }
 
     @Override
     public User findByLogin(String login) {
+        log.info("login by findByLogin in userService");
         return userRepository.findByLogin(login);
     }
 
+    @Transactional
     @Override
     public User registerUser(User user) {
+        log.info("user by registerUser in userService");
         Role roleUser = roleRepository.findByRole("ROLE_USER");
         userRoles.add(roleUser);
         user.setPassword(user.getPassword());
@@ -70,8 +82,10 @@ public class UserServiceImpl implements UserService {
         return registeredUser;
     }
 
+    @Transactional
     @Override
     public User registerAdmin(User user) {
+        log.info("user by registerAdmin in userService");
         Role roleUser = roleRepository.findByRole("ROLE_ADMIN");
         userRoles.add(roleUser);
         user.setPassword(user.getPassword());
@@ -86,6 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
+        log.info("email by findByEmail in userService");
         return userRepository.findByEmail(email);
     }
 }

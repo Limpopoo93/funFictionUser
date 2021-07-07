@@ -22,7 +22,6 @@ public class UserDto implements Serializable {
         user.setNameUser(firstName);
         user.setSurnameUser(lastName);
         user.setEmail(email);
-
         return user;
     }
 
@@ -33,7 +32,6 @@ public class UserDto implements Serializable {
         userDto.setFirstName(user.getNameUser());
         userDto.setLastName(user.getSurnameUser());
         userDto.setEmail(user.getEmail());
-
         return userDto;
     }
 }

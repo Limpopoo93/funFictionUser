@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 
 import static FunFictionUserProject.funFictionUser.util.DataBaseConstant.GENRE_TABLE;
