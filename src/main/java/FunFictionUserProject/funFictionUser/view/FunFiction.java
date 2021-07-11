@@ -33,6 +33,8 @@ public class FunFiction implements Serializable {
     private Integer like;
     @Column(name = CREATED)
     private Date created;
+    @Column(name = "col_rating")
+    private Integer colRating;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinColumn(name = ID_GENRE, nullable = false)
     private Genre genre;

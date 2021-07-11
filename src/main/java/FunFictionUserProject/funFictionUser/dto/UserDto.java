@@ -14,6 +14,9 @@ public class UserDto implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private Long idChapter;
+    private int rating;
+    private int like;
 
     public User toUser() {
         User user = new User();

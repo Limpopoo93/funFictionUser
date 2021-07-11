@@ -35,6 +35,23 @@ alter table m_comments
     owner to postgres;
 
 -- auto-generated definition
+create table m_favorites
+(
+    id         bigserial not null
+        constraint m_favorites_pk
+            primary key,
+    status     varchar   not null,
+    id_user    bigint    not null
+        constraint m_favorites_m_user__fk
+            references m_user,
+    id_fun_fic bigint    not null
+        constraint m_favorites_m_fun_fiction__fk
+            references m_fun_fiction
+);
+
+alter table m_favorites
+    owner to postgres;
+-- auto-generated definition
 create table m_fun_fiction
 (
     id                bigserial        not null
@@ -50,7 +67,8 @@ create table m_fun_fiction
             references m_genre,
     id_user           bigint
         constraint m_fun_fiction_m_user__fk
-            references m_user
+            references m_user,
+    col_rating        integer
 );
 
 alter table m_fun_fiction
@@ -67,6 +85,41 @@ create table m_genre
 );
 
 alter table m_genre
+    owner to postgres;
+
+-- auto-generated definition
+create table m_like_fun_fic
+(
+    id         bigserial not null
+        constraint m_like_fun_fic_pk
+            primary key,
+    id_fun_fic bigint    not null
+        constraint m_like_fun_fic_m_fun_fiction__fk
+            references m_fun_fiction,
+    id_user    bigint    not null
+        constraint m_like_fun_fic_m_user__fk
+            references m_user
+);
+
+alter table m_like_fun_fic
+    owner to postgres;
+
+-- auto-generated definition
+create table m_rating_fun_fic
+(
+    id         bigserial not null
+        constraint m_rating_fun_fic_pk
+            primary key,
+    id_user    bigint    not null
+        constraint m_rating_fun_fic_m_user__fk
+            references m_user,
+    id_fun_fic bigint    not null
+        constraint m_rating_fun_fic_m_fun_fiction__fk
+            references m_fun_fiction,
+    rating     bigint    not null
+);
+
+alter table m_rating_fun_fic
     owner to postgres;
 
 -- auto-generated definition
@@ -141,3 +194,4 @@ create table m_user_role
 
 alter table m_user_role
     owner to postgres;
+

@@ -7,7 +7,10 @@ import FunFictionUserProject.funFictionUser.view.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -22,12 +25,11 @@ public class FunFicRequestDto implements Serializable {
     private Double rating;
     private Integer like;
     private Date created;
-   // private Genre genre;
     private String genre;
     private Long idUser;
-   // private List<String> tags;
    private List<Tags> tags;
    private List<String> typeTags;
+   private String emailUser;
 /*
     public FunFiction toFunFic() {
         FunFiction funFiction = new FunFiction();

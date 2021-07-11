@@ -1,22 +1,40 @@
 package FunFictionUserProject.funFictionUser.controller;
 
+import FunFictionUserProject.funFictionUser.dto.ChapterRequestDto;
+import FunFictionUserProject.funFictionUser.dto.FunFicRequestDto;
 import FunFictionUserProject.funFictionUser.dto.UserListDto;
 import FunFictionUserProject.funFictionUser.exeption.EntityNotFoundException;
 import FunFictionUserProject.funFictionUser.service.*;
 import FunFictionUserProject.funFictionUser.view.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static FunFictionUserProject.funFictionUser.util.DataConstant.*;
 import static FunFictionUserProject.funFictionUser.util.UrlConstant.*;
+import static java.nio.file.Files.copy;
+import static java.nio.file.Paths.get;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Slf4j
 @RestController
@@ -29,14 +47,18 @@ public class AdminController {
     private final FunFictionService funFictionService;
     private final GenreService genreService;
     private final CommentsService commentsService;
+    private final TagsService tagsService;
+    private final ChapterService chapterService;
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService) {
+    public AdminController(UserService userService, RoleService roleService, FunFictionService funFictionService, GenreService genreService, CommentsService commentsService, TagsService tagsService, ChapterService chapterService) {
         this.userService = userService;
         this.roleService = roleService;
         this.funFictionService = funFictionService;
         this.genreService = genreService;
         this.commentsService = commentsService;
+        this.tagsService = tagsService;
+        this.chapterService = chapterService;
     }
 
     /*
@@ -181,4 +203,91 @@ public class AdminController {
         log.info("genre saveAndFlush method updatedFunFunficByAdmin in adminController");
         return new ResponseEntity<>(funFictionResult, HttpStatus.OK);
     }
+    /*
+добавление произведения от имени админа
+*/
+    @PostMapping("/addFunFicByAdmin")
+    public ResponseEntity<FunFicRequestDto> addFunFicByUser(@RequestBody FunFicRequestDto funFiction) throws IOException {
+        User user = userService.findById(funFiction.getIdUser());
+        if (user == null) {
+            throw new EntityNotFoundException("user not found");
+        }
+
+        FunFiction funFictionResult = new FunFiction();
+        List<Tags> tagsList = new ArrayList<>();
+        Genre genre = genreService.findByTypeGenre(funFiction.getGenre());
+        log.info("genre findByTypeGenre addFunFicByUser in workingController");
+        funFictionResult.setGenre(genre);
+        funFictionResult.setCreated(new Date());
+        funFictionResult.setNameFun(funFiction.getNameFun());
+        funFictionResult.setShortDescription(funFiction.getShortDescription());
+        funFictionResult.setLike(0);
+        funFictionResult.setRating(0.0);
+        funFictionResult.setUser(user);
+        for (String tags : funFiction.getTypeTags()) {
+            Tags tagsResult = tagsService.findByTypeTags(tags);
+            log.info("tags findByTypeTags addFunFicByUser in workingController");
+            tagsList.add(tagsResult);
+        }
+        funFictionResult.setTags(tagsList);
+        FunFiction funFictionNew = funFictionService.save(funFictionResult);
+        log.info("fun fic save addFunFicByUser in workingController");
+        FunFicRequestDto funFicRequestDto = FunFicRequestDto.fromFunFic(funFictionNew);
+
+        return new ResponseEntity<>(funFicRequestDto, HttpStatus.OK);
+    }
+
+    /*
+    добавление глав после добавления fun fic.
+    */
+    @PostMapping("/addChapterByAdmin")
+    public ResponseEntity<ChapterRequestDto> addChapter(@RequestBody ChapterRequestDto chapterRequestDto) {
+        FunFiction funFiction = funFictionService.findById(chapterRequestDto.getIdFunFic());
+        log.info("fun fic findById addChapter in workingController");
+        if (funFiction == null) {
+            throw new EntityNotFoundException("fun fic not found");
+        }
+        Chapter chapter = new Chapter();
+        chapter.setNumberChapter(chapterRequestDto.getNumberChapter());
+        chapter.setNameChapter(chapterRequestDto.getNameChapter());
+        chapter.setTextChapter(chapterRequestDto.getTextChapter());
+        chapter.setFunFiction(funFiction);
+        ChapterRequestDto chapterRequestDtoNew = ChapterRequestDto.fromChapter(chapterService.save(chapter));
+        log.info("chapter save addChapter in workingController");
+        return new ResponseEntity<>(chapterRequestDtoNew, HttpStatus.OK);
+    }
+
+
+    /*
+добавление произведения от имени админа по id User
+*/
+    @PostMapping("/addFunFicByAdminThisUser")
+    public ResponseEntity<FunFicRequestDto> addFunFicByUserId(@RequestBody FunFicRequestDto funFiction) {
+        User user = userService.findById(funFiction.getIdUser());
+        if (user == null) {
+            throw new EntityNotFoundException("user not found");
+        }
+        FunFiction funFictionResult = new FunFiction();
+        List<Tags> tagsList = new ArrayList<>();
+        Genre genre = genreService.findByTypeGenre(funFiction.getGenre());
+        log.info("genre findByTypeGenre addFunFicByUser in workingController");
+        funFictionResult.setGenre(genre);
+        funFictionResult.setCreated(new Date());
+        funFictionResult.setNameFun(funFiction.getNameFun());
+        funFictionResult.setShortDescription(funFiction.getShortDescription());
+        funFictionResult.setLike(0);
+        funFictionResult.setRating(0.0);
+        funFictionResult.setUser(user);
+        for (String tags : funFiction.getTypeTags()) {
+            Tags tagsResult = tagsService.findByTypeTags(tags);
+            log.info("tags findByTypeTags addFunFicByUser in workingController");
+            tagsList.add(tagsResult);
+        }
+        funFictionResult.setTags(tagsList);
+        FunFiction funFictionNew = funFictionService.save(funFictionResult);
+        log.info("fun fic save addFunFicByUser in workingController");
+        FunFicRequestDto funFicRequestDto = FunFicRequestDto.fromFunFic(funFictionNew);
+        return new ResponseEntity<>(funFicRequestDto, HttpStatus.OK);
+    }
+
 }

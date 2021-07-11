@@ -52,14 +52,24 @@ public class FunFictionServiceImpl implements FunFictionService {
     }
 
     @Override
-    public List<FunFiction> findFunFictionByUserId(Long id) {
+    public List<FunFiction> findFunFictionByUserIdOrderByRatingDesc(Long id) {
         log.info("id by findFunFictionByUserId in funFicService");
-        return funFictionRepository.findFunFictionByUserId(id);
+        return funFictionRepository.findFunFictionByUserIdOrderByRatingDesc(id);
     }
 
     @Override
-    public List<FunFiction> findByNameFunContaining(String name) {
+    public List<FunFiction> findByNameFunContainingOrderByRatingDesc(String name) {
         log.info("name by findByNameFunContaining in funFicService");
-        return funFictionRepository.findByNameFunContaining(name);
+        return funFictionRepository.findByNameFunContainingOrderByRatingDesc(name);
+    }
+
+    @Override
+    public List<FunFiction> findAllFun() {
+        return funFictionRepository.findAllFun();
+    }
+
+    @Override
+    public List<FunFiction> findByNameFunLike(String name) {
+        return funFictionRepository.findByNameFunLike(name);
     }
 }

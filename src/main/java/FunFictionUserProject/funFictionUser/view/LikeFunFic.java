@@ -13,19 +13,15 @@ import java.io.Serializable;
 @EqualsAndHashCode()
 @ToString(exclude = {"funFiction"})
 @Entity
-@Table(name = "m_chapter")
-public class Chapter implements Serializable {
+@Table(name = "m_like_fun_fic")
+public class LikeFunFic implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "number_chapter")
-    private int numberChapter;
-    @Column(name = "name_chapter")
-    private String nameChapter;
-    @Column(name = "text_chapter")
-    private String textChapter;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "id_fun_fiction", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false)
+    private User user;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "id_fun_fic", nullable = false)
     private FunFiction funFiction;
-
 }

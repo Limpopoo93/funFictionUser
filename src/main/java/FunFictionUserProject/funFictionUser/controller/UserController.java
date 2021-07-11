@@ -146,7 +146,7 @@ public class UserController {
     */
     @GetMapping("/searchFunFiction/{name}")
     public ResponseEntity<List<FunFiction>> searchFunFiction(@PathVariable("name") String name) {
-        List<FunFiction> funFictionList = funFictionService.findByNameFunContaining(name);
+        List<FunFiction> funFictionList = funFictionService.findByNameFunContainingOrderByRatingDesc(name);
         log.info("list fun fic findByNameFunContaining method searchFunFiction in userController");
         if (funFictionList.isEmpty()) {
             List<Comments> comments = commentsService.findByTextCommentContaining(name);

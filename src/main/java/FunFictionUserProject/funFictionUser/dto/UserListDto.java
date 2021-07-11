@@ -1,11 +1,14 @@
 package FunFictionUserProject.funFictionUser.dto;
 
+import FunFictionUserProject.funFictionUser.view.Role;
 import FunFictionUserProject.funFictionUser.view.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +23,7 @@ public class UserListDto implements Serializable {
     private String background;
     private String language;
     private String status;
+    private List<String> roles;
 
     public static UserListDto fromUser(User user) {
         UserListDto userDto = new UserListDto();
@@ -32,6 +36,9 @@ public class UserListDto implements Serializable {
         userDto.setBackground(user.getBackground());
         userDto.setLanguage(user.getLanguage());
         userDto.setStatus(String.valueOf(user.getStatus()));
+        for (Role role: user.getRoles()){
+            userDto.setRoles(Collections.singletonList(role.getRole()));
+        }
         return userDto;
     }
 }
